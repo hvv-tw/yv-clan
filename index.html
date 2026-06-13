@@ -1,1 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/hvv-tw/vt-clan/main/vy.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VN CLAN × TY CLAN | rivals戰隊</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
+        body, html {
+            height: 100%;
+            background-color: #020204;
+            color: #fff;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        #custom-cursor, #custom-cursor-blur {
+            display: none !important;
+        }
+
+        .click-burst-p {
+            position: fixed;
+            pointer-events: none;
+            border-radius: 50%;
+            z-index: 10001;
+            will-change: transform, opacity;
+            animation: burstAnim 0.4s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+        }
+
+        @keyframes burstAnim {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0); opacity: 0; }
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            width: 100vw;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .container.shake {
+            animation: screenShake 0.35s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes screenShake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+            40%, 60% { transform: translate3d(3px, 0, 0); }
+        }
+
+        #impact-flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 10000;
+            opacity: 0;
+        }
+        #impact-flash.flash-vn { animation: flashBlue 0.45s ease-out; }
+        #impact-flash.flash-ty { animation: flashGold 0.45s ease-out; }
+
+        @keyframes flashBlue {
+            0% { opacity: 0.4; background: #00f2fe; filter: blur(15px); }
+            100% { opacity: 0; background: transparent; }
+        }
+        @keyframes flashGold {
+            0% { opacity: 0.35; background: #ffe259; filter: blur(15px); }
+            100% { opacity: 0; background: transparent; }
+        }
+
+        .split {
+            width: 100%;
+            min-height: calc(50vh - 25px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .split::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.08;
+            pointer-events: none;
+        }
+
+        .particles-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .vn-side {
+            background: linear-gradient(180deg, #040612 0%, #010102 100%);
+        }
+        .vn-side::before {
+            background-image: linear-gradient(rgba(0, 242, 254, 0.12) 1.5px, transparent 1.5px),
+                              linear-gradient(90deg, rgba(0, 242, 254, 0.12) 1.5px, transparent 1.5px);
+            background-size: 50px 50px;
+        }
+
+        .ty-side {
+            background: linear-gradient(180deg, #0e0b07 0%, #010101 100%);
+        }
+        .ty-side::before {
+            background: repeating-linear-gradient(45deg, rgba(212, 175, 55, 0.04), rgba(212, 175, 55, 0.04) 15px, transparent 15px, transparent 30px);
+        }
+
+        .middle-gap {
+            width: 100%;
+            height: 50px;
+            background: #050507;
+            border-top: 1px solid rgba(0, 242, 254, 0.25);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 0 30px rgba(0,0,0,0.95);
+            overflow: hidden;
+        }
+
+        .middle-gap::before {
+            content: '';
+            position: absolute;
+            left: -100%;
+            top: 0;
+            height: 100%;
+            width: 40%;
+            background: linear-gradient(to right, transparent, rgba(0, 242, 254, 0.15), rgba(212, 175, 55, 0.15), transparent);
+            animation: scanlineMobile 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+
+        @keyframes scanlineMobile {
+            0% { left: -100%; }
+            100% { left: 200%; }
+        }
+        
+        .coop-text {
+            font-size: 1.1rem;
+            font-weight: 900;
+            letter-spacing: 10px;
+            text-indent: 10px;
+            background: linear-gradient(90deg, #00f2fe 0%, #ffe259 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulseGlow 1.8s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { filter: drop-shadow(0 0 4px rgba(0, 242, 254, 0.4)); transform: scale(0.98); }
+            100% { filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.5)); transform: scale(1.02); }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 24px;
+            padding: 35px 25px;
+            width: 100%;
+            max-width: 360px;
+            text-align: center;
+            position: relative;
+            z-index: 5;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:active {
+            transform: scale(0.99);
+        }
+
+        .border-glow-path {
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            pointer-events: none;
+            z-index: 7;
+            padding: 1.5px;
+            background: transparent;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+
+        .vn-side .border-glow-path {
+            background: conic-gradient(from var(--border-angle, 0deg), transparent 50%, #00f2fe 100%);
+            animation: borderRotate 3s linear infinite;
+        }
+        .ty-side .border-glow-path {
+            background: conic-gradient(from var(--border-angle, 0deg), transparent 50%, #ffe259 100%);
+            animation: borderRotate 3s linear infinite;
+        }
+
+        @property --border-angle {
+            syntax: '<angle>';
+            initial-value: 0deg;
+            inherits: false;
+        }
+
+        @keyframes borderRotate {
+            to { --border-angle: 360deg; }
+        }
+
+        .vn-side .card { border: 1px solid rgba(0, 242, 254, 0.15); }
+        .ty-side .card { border: 1px solid rgba(212, 175, 55, 0.12); }
+
+        .logo-text {
+            font-size: 2.8rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .vn-text {
+            background: linear-gradient(45deg, #00f2fe, #4facfe, #00f2fe);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shineText 3s linear infinite;
+        }
+        .ty-text {
+            background: linear-gradient(45deg, #ffe259, #ffa751, #ffe259);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shineText 3s linear infinite;
+        }
+
+        @keyframes shineText {
+            to { background-position: 200% center; }
+        }
+
+        .sub-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .sub-title::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            width: 80%;
+            height: 1.5px;
+            transform: translateX(-50%);
+        }
+        .vn-side .sub-title::after { background: #00f2fe; box-shadow: 0 0 6px #00f2fe; }
+        .ty-side .sub-title::after { background: #ffe259; box-shadow: 0 0 6px #ffe259; }
+
+        .vn-side .sub-title { color: rgba(0, 242, 254, 0.85); }
+        .ty-side .sub-title { color: rgba(212, 175, 55, 0.85); }
+
+        .desc {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #d0d0d8;
+            margin-bottom: 25px;
+        }
+
+        .difficulty-box {
+            border-radius: 16px;
+            padding: 12px 20px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            margin-bottom: 25px;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .vn-box {
+            background: rgba(0, 242, 254, 0.08);
+            border: 1px solid rgba(0, 242, 254, 0.4);
+            color: #00f2fe;
+        }
+
+        .ty-box {
+            background: rgba(212, 175, 55, 0.06);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: #ffe259;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px 32px;
+            font-size: 1rem;
+            font-weight: 800;
+            text-decoration: none;
+            border-radius: 50px;
+            width: 100%;
+            letter-spacing: 2px;
+            transition: transform 0.1s ease, box-shadow 0.2s ease;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        .btn-vn {
+            background: linear-gradient(45deg, #00f2fe, #4facfe);
+            color: #010103;
+            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+        }
+
+        .btn-ty {
+            background: transparent;
+            color: #ffe259;
+            border: 2px solid #ffe259;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="impact-flash"></div>
+
+    <div class="container" id="mainContainer">
+        
+        <div class="split vn-side" id="vnSide">
+            <canvas id="vnCanvas" class="particles-canvas"></canvas>
+            <div class="card">
+                <div class="border-glow-path"></div>
+                <div class="logo-text vn-text">VN CLAN</div>
+                <div class="sub-title">EST 2026</div>
+                <p class="desc">
+                    不錯的戰隊。適合給喜歡有挑戰性的Rivals玩家。每個成員都品行優良。
+                </p>
+                <div class="difficulty-box vn-box">考核難度：比較難考</div>
+                <a href="https://discord.gg/UNRVAcKmD3" target="_blank" class="btn btn-vn" id="vnBtn">
+                    進入 DISCORD 伺服器
+                </a>
+            </div>
+        </div>
+
+        <div class="middle-gap" id="middleGap">
+            <div class="coop-text">合作中</div>
+        </div>
+
+        <div class="split ty-side" id="tySide">
+            <canvas id="tyCanvas" class="particles-canvas"></canvas>
+            <div class="card">
+                <div class="border-glow-path"></div>
+                <div class="logo-text ty-text">TY CLAN</div>
+                <div class="sub-title">EST 2026</div>
+                <p class="desc">
+                    很棒的戰隊。適合給想要考戰隊可是又找不到好的戰隊的Rivals玩家。每個成員都品行優良。
+                </p>
+                <div class="difficulty-box ty-box">考核難度：比較簡單</div>
+                <a href="https://discord.gg/uVADKfqsWM" target="_blank" class="btn btn-ty" id="tyBtn">
+                    進入 DISCORD 伺服器
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const vnSide = document.getElementById('vnSide');
+        const tySide = document.getElementById('tySide');
+        const mainContainer = document.getElementById('mainContainer');
+        const flashOverlay = document.getElementById('impact-flash');
+        const vnCanvas = document.getElementById('vnCanvas');
+        const tyCanvas = document.getElementById('tyCanvas');
+        const vnBtn = document.getElementById('vnBtn');
+        const tyBtn = document.getElementById('tyBtn');
+        
+        const vnCtx = vnCanvas.getContext('2d');
+        const tyCtx = tyCanvas.getContext('2d');
+        let vnParticles = [];
+        let tyParticles = [];
+
+        let audioCtx = null;
+        let audioMuted = false;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSynthSound(type) {
+            if (audioMuted) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                if (type === 'click') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(160, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.12);
+                    gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.12);
+                }
+            } catch (e) {}
+        }
+
+        function resizeCanvases() {
+            vnCanvas.width = vnSide.offsetWidth;
+            vnCanvas.height = vnSide.offsetHeight;
+            tyCanvas.width = tySide.offsetWidth;
+            tyCanvas.height = tySide.offsetHeight;
+        }
+
+        function createParticle(sideType) {
+            const w = sideType === 'vn' ? vnCanvas.width : tyCanvas.width;
+            const h = sideType === 'vn' ? vnCanvas.height : tyCanvas.height;
+            return {
+                x: Math.random() * w,
+                y: h + Math.random() * 20,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: -(Math.random() * 0.6 + 0.3),
+                size: sideType === 'vn' ? Math.random() * 4 + 1.5 : Math.random() * 3 + 1,
+                opacity: Math.random() * 0.3 + 0.1,
+                maxLife: Math.random()
+            };
+        }
+
+        function initParticles() {
+            vnParticles = [];
+            tyParticles = [];
+            for(let i=0; i<25; i++) vnParticles.push(createParticle('vn'));
+            for(let i=0; i<25; i++) tyParticles.push(createParticle('ty'));
+        }
+
+        function updateAndDrawParticles(ctx, particles, w, h, color) {
+            ctx.clearRect(0, 0, w, h);
+            particles.forEach((p, index) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.y < -10) {
+                    particles[index] = createParticle(color === '#00f2fe' ? 'vn' : 'ty');
+                }
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.globalAlpha = p.opacity;
+                ctx.shadowBlur = 6;
+                ctx.shadowColor = color;
+                ctx.fill();
+            });
+            ctx.globalAlpha = 1;
+            ctx.shadowBlur = 0;
+        }
+
+        function animate() {
+            updateAndDrawParticles(vnCtx, vnParticles, vnCanvas.width, vnCanvas.height, '#00f2fe');
+            updateAndDrawParticles(tyCtx, tyParticles, tyCanvas.width, tyCanvas.height, '#ffe259');
+            requestAnimationFrame(animate);
+        }
+
+        function triggerClickBurst(x, y) {
+            for (let i = 0; i < 12; i++) {
+                const p = document.createElement('div');
+                p.className = 'click-burst-p';
+                p.style.left = x + 'px';
+                p.style.top = y + 'px';
+                
+                const size = Math.random() * 6 + 4;
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                
+                if (y < window.innerHeight / 2) {
+                    p.style.background = Math.random() > 0.5 ? '#00f2fe' : '#4facfe';
+                    p.style.boxShadow = '0 0 8px #00f2fe';
+                } else {
+                    p.style.background = Math.random() > 0.5 ? '#ffe259' : '#ffa751';
+                    p.style.boxShadow = '0 0 8px #ffe259';
+                }
+
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 60 + 30;
+                p.style.setProperty('--dx', Math.cos(angle) * speed + 'px');
+                p.style.setProperty('--dy', Math.sin(angle) * speed + 'px');
+
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 400);
+            }
+        }
+
+        window.addEventListener('touchstart', (e) => {
+            initAudio();
+            const touch = e.touches[0];
+            triggerClickBurst(touch.clientX, touch.clientY);
+        }, { passive: true });
+
+        vnBtn.addEventListener('click', (e) => {
+            playSynthSound('click');
+            mainContainer.classList.add('shake');
+            flashOverlay.className = 'flash-vn';
+            setTimeout(() => {
+                mainContainer.classList.remove('shake');
+                flashOverlay.className = '';
+            }, 450);
+        });
+
+        tyBtn.addEventListener('click', (e) => {
+            playSynthSound('click');
+            mainContainer.classList.add('shake');
+            flashOverlay.className = 'flash-ty';
+            setTimeout(() => {
+                mainContainer.classList.remove('shake');
+                flashOverlay.className = '';
+            }, 450);
+        });
+
+        window.addEventListener('resize', () => {
+            resizeCanvases();
+            initParticles();
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            resizeCanvases();
+            initParticles();
+            animate();
+        });
+    </script>
+</body>
+</html>
