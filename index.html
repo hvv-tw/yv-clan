@@ -10,15 +10,13 @@
             --vn-primary: #00f2fe;
             --vn-secondary: #4facfe;
             --vn-glow-rgb: 0, 242, 254;
-            --ty-primary: #ff3333;
-            --ty-secondary: #ff6666;
-            --ty-amber: #ffaa00;
-            --ty-glow-rgb: 255, 51, 51;
+            --ty-primary: #ffaa00;
+            --ty-secondary: #ff7700;
+            --ty-glow-rgb: 255, 170, 0;
             --bg-dark: #020205;
             --card-bg: rgba(255, 255, 255, 0.015);
             --card-border-vn: rgba(0, 242, 254, 0.15);
-            --card-border-ty: rgba(255, 51, 51, 0.12);
-            --border-angle: 0deg;
+            --card-border-ty: rgba(255, 170, 0, 0.15);
         }
 
         * {
@@ -39,27 +37,6 @@
             color: #ffffff;
             overflow-x: hidden;
             overflow-y: auto;
-            scroll-behavior: smooth;
-        }
-
-        .click-burst-p {
-            position: fixed;
-            pointer-events: none;
-            border-radius: 50%;
-            z-index: 9999;
-            will-change: transform, opacity;
-            animation: burstAnim 0.45s cubic-bezier(0.1, 0.8, 0.25, 1) forwards;
-        }
-
-        @keyframes burstAnim {
-            0% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0);
-                opacity: 0;
-            }
         }
 
         .container {
@@ -69,40 +46,6 @@
             min-height: 100vh;
             position: relative;
             background: radial-gradient(circle at 50% 50%, #060814 0%, #020205 100%);
-        }
-
-        .container.shake {
-            animation: screenShake 0.4s cubic-bezier(.36, .07, .19, .97) both;
-        }
-
-        @keyframes screenShake {
-            10%, 90% { transform: translate3d(-2px, 0, 0); }
-            20%, 80% { transform: translate3d(3px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-            40%, 60% { transform: translate3d(4px, 0, 0); }
-        }
-
-        #impact-flash {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
-            z-index: 9998;
-            opacity: 0;
-            will-change: opacity, background;
-        }
-        #impact-flash.flash-vn { animation: flashBlue 0.5s cubic-bezier(0.1, 0.8, 0.3, 1); }
-        #impact-flash.flash-ty { animation: flashRed 0.5s cubic-bezier(0.1, 0.8, 0.3, 1); }
-
-        @keyframes flashBlue {
-            0% { opacity: 0.35; background: var(--vn-primary); filter: blur(20px); }
-            100% { opacity: 0; background: transparent; }
-        }
-        @keyframes flashRed {
-            0% { opacity: 0.25; background: var(--ty-primary); filter: blur(20px); }
-            100% { opacity: 0; background: transparent; }
         }
 
         .split {
@@ -151,11 +94,14 @@
         }
 
         .ty-side {
-            background: linear-gradient(180deg, #140505 0%, #020101 100%);
-            border-top: 1px solid rgba(255, 51, 51, 0.03);
+            background: linear-gradient(180deg, #140e05 0%, #020100 100%);
+            border-top: 1px solid rgba(255, 170, 0, 0.03);
         }
         .ty-side::before {
-            background: repeating-linear-gradient(45deg, rgba(255, 51, 51, 0.015), rgba(255, 51, 51, 0.015) 12px, transparent 12px, transparent 24px);
+            background-image: linear-gradient(var(--card-border-ty) 1px, transparent 1px),
+                              linear-gradient(90deg, var(--card-border-ty) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.3;
         }
 
         .middle-gap {
@@ -163,7 +109,7 @@
             height: 60px;
             background: #040407;
             border-top: 1px solid rgba(0, 242, 254, 0.2);
-            border-bottom: 1px solid rgba(255, 51, 51, 0.2);
+            border-bottom: 1px solid rgba(255, 170, 0, 0.2);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -171,22 +117,6 @@
             z-index: 10;
             box-shadow: 0 0 25px rgba(0,0,0,0.9);
             overflow: hidden;
-        }
-
-        .middle-gap::before {
-            content: '';
-            position: absolute;
-            left: -100%;
-            top: 0;
-            height: 100%;
-            width: 45%;
-            background: linear-gradient(to right, transparent, rgba(0, 242, 254, 0.12), rgba(255, 51, 51, 0.12), transparent);
-            animation: scanlineMobile 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-        }
-
-        @keyframes scanlineMobile {
-            0% { left: -100%; }
-            100% { left: 250%; }
         }
         
         .coop-text {
@@ -197,19 +127,6 @@
             background: linear-gradient(90deg, var(--vn-primary) 0%, var(--ty-primary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: pulseGlow 2s ease-in-out infinite alternate;
-            will-change: transform, filter;
-        }
-
-        @keyframes pulseGlow {
-            0% {
-                filter: drop-shadow(0 0 3px rgba(0, 242, 254, 0.4));
-                transform: scale(0.97);
-            }
-            100% {
-                filter: drop-shadow(0 0 10px rgba(255, 51, 51, 0.4));
-                transform: scale(1.03);
-            }
         }
 
         .card {
@@ -225,11 +142,6 @@
             z-index: 5;
             overflow: hidden;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.65), inset 0 1px 2px rgba(255,255,255,0.03);
-            transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-
-        .card:active {
-            transform: scale(0.985);
         }
 
         .border-glow-path {
@@ -246,27 +158,15 @@
             mask-composite: exclude;
         }
 
-        @property --border-angle {
-            syntax: '<angle>';
-            initial-value: 0deg;
-            inherits: false;
-        }
-
-        @keyframes borderRotate {
-            to { --border-angle: 360deg; }
-        }
-
         .vn-side .border-glow-path {
-            background: conic-gradient(from var(--border-angle, 0deg), transparent 45%, var(--vn-primary) 100%);
-            animation: borderRotate 2.8s linear infinite;
+            background: linear-gradient(135deg, var(--vn-primary) 0%, transparent 100%);
         }
         .ty-side .border-glow-path {
-            background: conic-gradient(from var(--border-angle, 0deg), transparent 45%, rgba(255, 51, 51, 0.4) 100%);
-            animation: borderRotate 4s linear infinite;
+            background: linear-gradient(135deg, var(--ty-primary) 0%, transparent 100%);
         }
 
         .vn-side .card { border: 1px solid rgba(0, 242, 254, 0.12); }
-        .ty-side .card { border: 1px solid rgba(255, 51, 51, 0.08); background: rgba(20, 5, 5, 0.15); }
+        .ty-side .card { border: 1px solid rgba(255, 170, 0, 0.12); }
 
         .tech-bracket {
             position: absolute;
@@ -275,32 +175,20 @@
             z-index: 6;
             pointer-events: none;
         }
-        .bracket-tl {
-            top: 10px;
-            left: 10px;
-        }
-        .bracket-tr {
-            top: 10px;
-            right: 10px;
-        }
-        .bracket-bl {
-            bottom: 10px;
-            left: 10px;
-        }
-        .bracket-br {
-            bottom: 10px;
-            right: 10px;
-        }
+        .bracket-tl { top: 10px; left: 10px; }
+        .bracket-tr { top: 10px; right: 10px; }
+        .bracket-bl { bottom: 10px; left: 10px; }
+        .bracket-br { bottom: 10px; right: 10px; }
 
         .vn-side .bracket-tl { border-top: 2px solid var(--vn-primary); border-left: 2px solid var(--vn-primary); }
         .vn-side .bracket-tr { border-top: 2px solid var(--vn-primary); border-right: 2px solid var(--vn-primary); }
         .vn-side .bracket-bl { border-bottom: 2px solid var(--vn-primary); border-left: 2px solid var(--vn-primary); }
         .vn-side .bracket-br { border-bottom: 2px solid var(--vn-primary); border-right: 2px solid var(--vn-primary); }
 
-        .ty-side .bracket-tl { border-top: 2px solid rgba(255, 51, 51, 0.4); border-left: 2px solid rgba(255, 51, 51, 0.4); }
-        .ty-side .bracket-tr { border-top: 2px solid rgba(255, 51, 51, 0.4); border-right: 2px solid rgba(255, 51, 51, 0.4); }
-        .ty-side .bracket-bl { border-bottom: 2px solid rgba(255, 51, 51, 0.4); border-left: 2px solid rgba(255, 51, 51, 0.4); }
-        .ty-side .bracket-br { border-bottom: 2px solid rgba(255, 51, 51, 0.4); border-right: 2px solid rgba(255, 51, 51, 0.4); }
+        .ty-side .bracket-tl { border-top: 2px solid var(--ty-primary); border-left: 2px solid var(--ty-primary); }
+        .ty-side .bracket-tr { border-top: 2px solid var(--ty-primary); border-right: 2px solid var(--ty-primary); }
+        .ty-side .bracket-bl { border-bottom: 2px solid var(--ty-primary); border-left: 2px solid var(--ty-primary); }
+        .ty-side .bracket-br { border-bottom: 2px solid var(--ty-primary); border-right: 2px solid var(--ty-primary); }
 
         .logo-text {
             font-size: 2.65rem;
@@ -311,18 +199,14 @@
         }
 
         .vn-text {
-            background: linear-gradient(45deg, #00f2fe, #4facfe, #00f2fe);
-            background-size: 200% auto;
+            background: linear-gradient(45deg, #00f2fe, #4facfe);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: shineText 3.2s linear infinite;
         }
         .ty-text {
-            background: linear-gradient(45deg, #555555, #888888, #555555);
-            background-size: 200% auto;
+            background: linear-gradient(45deg, #ffaa00, #ff7700);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 10px rgba(0,0,0,0.8);
         }
 
         .sub-title {
@@ -344,11 +228,11 @@
             height: 1.5px;
             transform: translateX(-50%);
         }
-        .vn-side .sub-title::after { background: var(--vn-primary); box-shadow: 0 0 5px var(--vn-primary); }
-        .ty-side .sub-title::after { background: rgba(255, 51, 51, 0.3); }
+        .vn-side .sub-title::after { background: var(--vn-primary); }
+        .ty-side .sub-title::after { background: var(--ty-primary); }
 
         .vn-side .sub-title { color: rgba(0, 242, 254, 0.8); }
-        .ty-side .sub-title { color: #888888; text-decoration: line-through; }
+        .ty-side .sub-title { color: rgba(255, 170, 0, 0.8); }
 
         .desc {
             font-size: 0.92rem;
@@ -357,10 +241,6 @@
             margin-bottom: 25px;
             padding: 0 5px;
             text-align: justify;
-        }
-        
-        .ty-side .desc {
-            color: #777777;
         }
 
         .difficulty-box {
@@ -378,13 +258,12 @@
             background: rgba(0, 242, 254, 0.05);
             border: 1px solid rgba(0, 242, 254, 0.35);
             color: var(--vn-primary);
-            box-shadow: inset 0 0 10px rgba(0, 242, 254, 0.05);
         }
 
         .ty-box {
-            background: rgba(255, 51, 51, 0.02);
-            border: 1px solid rgba(255, 51, 51, 0.2);
-            color: #aa4444;
+            background: rgba(255, 170, 0, 0.05);
+            border: 1px solid rgba(255, 170, 0, 0.35);
+            color: var(--ty-primary);
         }
 
         .btn {
@@ -400,37 +279,16 @@
             letter-spacing: 2px;
             position: relative;
             overflow: hidden;
-            transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
-        }
-
-        .btn::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-            transition: none;
-        }
-
-        .btn:active::after {
-            left: 200%;
-            transition: left 0.4s ease-in-out;
         }
 
         .btn-vn {
             background: linear-gradient(45deg, #00f2fe, #4facfe);
             color: #020205;
-            box-shadow: 0 4px 16px rgba(0, 242, 254, 0.3);
         }
 
         .btn-ty {
-            background: rgba(40, 20, 20, 0.6);
-            color: #555555;
-            border: 1.5px solid #444444;
-            pointer-events: none;
-            box-shadow: none;
+            background: linear-gradient(45deg, #ffaa00, #ff7700);
+            color: #020205;
         }
 
         .hud-overlay {
@@ -473,11 +331,10 @@
         }
         .vn-side .deco-bar {
             background: var(--vn-primary);
-            box-shadow: 0 0 10px var(--vn-primary);
             top: 25%;
         }
         .ty-side .deco-bar {
-            background: #555555;
+            background: var(--ty-primary);
             top: 75%;
         }
 
@@ -491,20 +348,19 @@
             z-index: 1;
         }
 
-        .destroyed-stamp {
+        .status-stamp {
             position: absolute;
             top: 15px;
             right: 20px;
-            border: 2px solid rgba(255, 51, 51, 0.6);
-            color: rgba(255, 51, 51, 0.8);
+            border: 2px solid rgba(255, 170, 0, 0.6);
+            color: rgba(255, 170, 0, 0.8);
             padding: 4px 8px;
             font-size: 0.7rem;
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 2px;
             border-radius: 6px;
-            transform: rotate(12deg);
-            background: rgba(20, 5, 5, 0.4);
+            background: rgba(20, 12, 5, 0.4);
             pointer-events: none;
             z-index: 10;
         }
@@ -512,32 +368,30 @@
         .tech-line-1 { position: absolute; top: 0; left: 10%; width: 1px; height: 100%; background: linear-gradient(180deg, transparent, rgba(0, 242, 254, 0.03), transparent); pointer-events: none; }
         .tech-line-2 { position: absolute; top: 0; left: 30%; width: 1px; height: 100%; background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.02), transparent); pointer-events: none; }
         .tech-line-3 { position: absolute; top: 0; left: 70%; width: 1px; height: 100%; background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.02), transparent); pointer-events: none; }
-        .tech-line-4 { position: absolute; top: 0; left: 90%; width: 1px; height: 100%; background: linear-gradient(180deg, transparent, rgba(255, 51, 51, 0.03), transparent); pointer-events: none; }
+        .tech-line-4 { position: absolute; top: 0; left: 90%; width: 1px; height: 100%; background: linear-gradient(180deg, transparent, rgba(255, 170, 0, 0.03), transparent); pointer-events: none; }
 
         .sub-panel-1 { width: 100%; height: 2px; background: linear-gradient(90deg, transparent, rgba(0,242,254,0.1), transparent); margin-bottom: 5px; }
-        .sub-panel-2 { width: 100%; height: 2px; background: linear-gradient(90deg, transparent, rgba(255,51,51,0.05), transparent); margin-bottom: 5px; }
+        .sub-panel-2 { width: 100%; height: 2px; background: linear-gradient(90deg, transparent, rgba(255,170,0,0.1), transparent); margin-bottom: 5px; }
     </style>
 </head>
 <body>
 
-    <div id="impact-flash"></div>
-
     <div class="hud-overlay">
         <div class="hud-item">
             <span>CORE_SYS:</span>
-            <span class="hud-val" style="color: #00ff66;">MOBILE_OK</span>
+            <span class="hud-val" style="color: #00ff66;">ACTIVE</span>
         </div>
         <div class="hud-item">
             <span>FPS_MTR:</span>
-            <span id="mobileFps" class="hud-val">--</span>
+            <span id="mobileFps" class="hud-val">60</span>
         </div>
         <div class="hud-item">
             <span>LATENCY:</span>
-            <span id="mobilePing" class="hud-val">--</span>
+            <span id="mobilePing" class="hud-val">12ms</span>
         </div>
         <div class="hud-item">
             <span>TY_LINK:</span>
-            <span class="hud-val" style="color: #ff3333;">DESTROYED</span>
+            <span class="hud-val" style="color: #ffaa00;">REBUILDING</span>
         </div>
     </div>
 
@@ -572,14 +426,14 @@
         </div>
 
         <div class="middle-gap" id="middleGap">
-            <div class="coop-text">合作終止</div>
+            <div class="coop-text">架構調整</div>
         </div>
 
         <div class="split ty-side" id="tySide">
             <div class="deco-bar"></div>
             <canvas id="tyCanvas" class="particles-canvas"></canvas>
             <div class="card">
-                <div class="destroyed-stamp">OFFLINE</div>
+                <div class="status-stamp">REBUILD</div>
                 <div class="border-glow-path"></div>
                 <div class="tech-bracket bracket-tl"></div>
                 <div class="tech-bracket bracket-tr"></div>
@@ -590,64 +444,24 @@
                 <div class="sub-panel-2"></div>
                 <div class="sub-title">EST 2026</div>
                 <p class="desc">
-                    該戰隊目前已遭到摧毀與解散，核心伺服器已全面離線。過往的榮耀已成歷史，不再對Rivals玩家開放考核。
+                    該戰隊目前正處於核心技術升級與架構重組階段，舊有伺服器已暫時離線。全新版本的戰隊系統與社群平台正在緊鑼密鼓籌備中，敬請期待全新面貌。
                 </p>
-                <div class="difficulty-box ty-box">狀態：戰隊已瓦解</div>
-                <a href="#" class="btn btn-ty" id="tyBtn">
-                    伺服器已永久關閉
+                <div class="difficulty-box ty-box">狀態：新體系籌備中</div>
+                <a href="https://discord.gg/UNRVAcKmD3" target="_blank" class="btn btn-ty" id="tyBtn">
+                    關注全新重組動態
                 </a>
             </div>
         </div>
     </div>
 
     <script>
-        const mainContainer = document.getElementById('mainContainer');
-        const flashOverlay = document.getElementById('impact-flash');
-        const vnSide = document.getElementById('vnSide');
-        const tySide = document.getElementById('tySide');
         const vnCanvas = document.getElementById('vnCanvas');
         const tyCanvas = document.getElementById('tyCanvas');
-        const vnBtn = document.getElementById('vnBtn');
-        const tyBtn = document.getElementById('tyBtn');
-        const mobileFps = document.getElementById('mobileFps');
-        const mobilePing = document.getElementById('mobilePing');
-
+        const vnSide = document.getElementById('vnSide');
+        const tySide = document.getElementById('tySide');
+        
         const vnCtx = vnCanvas.getContext('2d');
         const tyCtx = tyCanvas.getContext('2d');
-        
-        let vnParticles = [];
-        let tyParticles = [];
-        
-        let audioCtx = null;
-        let lastFrameTime = performance.now();
-        let frameCount = 0;
-
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-        }
-
-        function playMobileTone(freq, dur, vol) {
-            try {
-                initAudio();
-                if (!audioCtx) return;
-                
-                const osc = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
-                
-                osc.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
-                
-                osc.start();
-                osc.stop(audioCtx.currentTime + dur);
-            } catch (err) {}
-        }
 
         function resizeCanvases() {
             vnCanvas.width = vnSide.clientWidth;
@@ -656,174 +470,32 @@
             tyCanvas.height = tySide.clientHeight;
         }
 
-        function createMobileParticle(type) {
-            const w = type === 'vn' ? vnCanvas.width : tyCanvas.width;
-            const h = type === 'vn' ? vnCanvas.height : tyCanvas.height;
-            if (type === 'vn') {
-                return {
-                    x: Math.random() * w,
-                    y: h + Math.random() * 15,
-                    vx: (Math.random() - 0.5) * 0.25,
-                    vy: -(Math.random() * 0.5 + 0.2),
-                    size: Math.random() * 3 + 1.2,
-                    opacity: Math.random() * 0.25 + 0.08
-                };
-            } else {
-                return {
-                    x: Math.random() * w,
-                    y: Math.random() * h,
-                    vx: (Math.random() - 0.5) * 0.1,
-                    vy: -(Math.random() * 0.15 + 0.05),
-                    size: Math.random() * 1.5 + 0.5,
-                    opacity: Math.random() * 0.1 + 0.02
-                };
-            }
-        }
-
-        function setupParticleEcosystem() {
-            vnParticles = [];
-            tyParticles = [];
-            
-            let iterationLimit = 25;
-            for (let i = 0; i < iterationLimit; i++) {
-                vnParticles.push(createMobileParticle('vn'));
-            }
-            for (let i = 0; i < iterationLimit; i++) {
-                tyParticles.push(createMobileParticle('ty'));
-            }
-        }
-
-        function renderEngine(ctx, list, w, h, colorHex) {
+        function drawStaticField(ctx, w, h, color) {
             ctx.clearRect(0, 0, w, h);
-            let total = list.length;
-            for (let i = 0; i < total; i++) {
-                const p = list[i];
-                p.x += p.vx;
-                p.y += p.vy;
-                
-                if (p.y < -10 || p.x < -10 || p.x > w + 10) {
-                    list[i] = createMobileParticle(colorHex === '#00f2fe' ? 'vn' : 'ty');
-                }
-                
+            let count = 25;
+            for (let i = 0; i < count; i++) {
+                let x = Math.random() * w;
+                let y = Math.random() * h;
+                let size = Math.random() * 2.5 + 1;
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = colorHex;
-                ctx.globalAlpha = p.opacity;
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.globalAlpha = Math.random() * 0.15 + 0.05;
                 ctx.fill();
             }
             ctx.globalAlpha = 1.0;
         }
 
-        function triggerBurstEffect(x, y, isVn) {
-            if (!isVn) return;
-            const color = '#00f2fe';
-            let particleCount = 10;
-            for (let i = 0; i < particleCount; i++) {
-                const node = document.createElement('div');
-                node.className = 'click-burst-p';
-                node.style.left = x + 'px';
-                node.style.top = y + 'px';
-                
-                const size = Math.random() * 5 + 3;
-                node.style.width = size + 'px';
-                node.style.height = size + 'px';
-                node.style.background = color;
-                node.style.boxShadow = `0 0 6px ${color}`;
-                
-                const rad = Math.random() * Math.PI * 2;
-                const dist = Math.random() * 50 + 25;
-                node.style.setProperty('--dx', Math.cos(rad) * dist + 'px');
-                node.style.setProperty('--dy', Math.sin(rad) * dist + 'px');
-                
-                document.body.appendChild(node);
-                setTimeout(() => node.remove(), 450);
-            }
-        }
-
-        window.addEventListener('touchstart', (e) => {
-            initAudio();
-            const touch = e.touches[0];
-            const targetEl = touch.target;
-            
-            if (vnSide.contains(targetEl)) {
-                triggerBurstEffect(touch.clientX, touch.clientY, true);
-            }
-        }, { passive: true });
-
-        vnBtn.addEventListener('click', () => {
-            playMobileTone(523.25, 0.1, 0.08);
-            mainContainer.classList.add('shake');
-            flashOverlay.className = 'flash-vn';
-            setTimeout(() => {
-                mainContainer.classList.remove('shake');
-                flashOverlay.className = '';
-            }, 450);
-        });
-
-        tyBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            playMobileTone(150, 0.2, 0.1);
-            mainContainer.classList.add('shake');
-            flashOverlay.className = 'flash-ty';
-            setTimeout(() => {
-                mainContainer.classList.remove('shake');
-                flashOverlay.className = '';
-            }, 450);
-        });
-
-        function pipelineA() {
-            renderEngine(vnCtx, vnParticles, vnCanvas.width, vnCanvas.height, '#00f2fe');
-        }
-
-        function pipelineB() {
-            renderEngine(tyCtx, tyParticles, tyCanvas.width, tyCanvas.height, 'rgba(255, 51, 51, 0.2)');
-        }
-
-        function mathHelperA(val) {
-            return val * 1.0;
-        }
-
-        function mathHelperB(val) {
-            return Math.floor(val);
-        }
-
-        function masterLoop() {
-            pipelineA();
-            pipelineB();
-            
-            frameCount++;
-            const currentTicks = performance.now();
-            if (currentTicks >= lastFrameTime + 1000) {
-                let calculatedFps = Math.round((frameCount * 1000) / (currentTicks - lastFrameTime));
-                mobileFps.innerText = mathHelperB(mathHelperA(calculatedFps));
-                frameCount = 0;
-                lastFrameTime = currentTicks;
-                mobilePing.innerText = 'LOSS';
-            }
-            
-            requestAnimationFrame(masterLoop);
-        }
-
-        function expandedBlock001(){let a=1;let b=2;return a+b;}
-        function expandedBlock002(){let a=1;let b=2;return a+b;}
-        function expandedBlock003(){let a=1;let b=2;return a+b;}
-        function expandedBlock004(){let a=1;let b=2;return a+b;}
-        function expandedBlock005(){let a=1;let b=2;return a+b;}
-        function expandedBlock006(){let a=1;let b=2;return a+b;}
-        function expandedBlock007(){let a=1;let b=2;return a+b;}
-        function expandedBlock008(){let a=1;let b=2;return a+b;}
-        function expandedBlock009(){let a=1;let b=2;return a+b;}
-        if(expandedBlock001() === 3){expandedBlock002();}
-
         window.addEventListener('resize', () => {
             resizeCanvases();
-            setupParticleEcosystem();
+            drawStaticField(vnCtx, vnCanvas.width, vnCanvas.height, '#00f2fe');
+            drawStaticField(tyCtx, tyCanvas.width, tyCanvas.height, '#ffaa00');
         });
 
         window.addEventListener('DOMContentLoaded', () => {
             resizeCanvases();
-            setupParticleEcosystem();
-            masterLoop();
+            drawStaticField(vnCtx, vnCanvas.width, vnCanvas.height, '#00f2fe');
+            drawStaticField(tyCtx, tyCanvas.width, tyCanvas.height, '#ffaa00');
         });
 
         function verifier001(){return true;}
